@@ -1,2 +1,2 @@
 # Synology
-Synology API finctions and scripts 
+Synology API functions and scripts 
