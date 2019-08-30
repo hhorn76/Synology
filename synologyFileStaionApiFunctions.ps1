@@ -273,6 +273,31 @@ function synologyUploadFileBody ($strFileName, $strFilePath, $strNetworkPath, $b
 	$jsonData = $hashBody | Invoke-RestMethod -Uri $strApiUrl -Headers $hashHeaders
 	$strStatus = $jsonData.success
 	Write-Host "File copy was successful: "$strStatus
+
+# 	POST /webapi/entry.cgi
+# Content-Length:20326728
+# Content-type: multipart/form-data, boundary=AaB03x
+# --AaB03x
+# content-disposition: form-data; name="api"
+# SYNO.FileStation.Upload
+# --AaB03x
+# content-disposition: form-data; name="version"
+# 2
+# --AaB03x
+# content-disposition: form-data; name="method"
+# upload
+# --AaB03x
+# content-disposition: form-data; name="path"
+# /upload/test
+# --AaB03x
+# content-disposition: form-data; name="create_parents"
+# true
+# --AaB03x
+# content-disposition: form-data; name="file"; filename="file1.txt"
+# Content-Type: application/octet-stream
+# ... contents of file1.txt ...
+# --AaB03x--
+
 }
 
 ################################################################################
