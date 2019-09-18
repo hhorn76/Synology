@@ -323,12 +323,33 @@ def synologyDeleteFolderUrllib3 (strSID, strPath):
 
 ################################################################################
 ### upload file to Filestation
-def synologyUploadFile (strFileName, strFilePath, strNetworkPath, boolOverwrite, boolCreatePrent):
-	strApiUrl = strFileServer + '/webapi/entry.cgi?api=SYNO.FileStation.Upload&version=2&method=upload&_sid=' + strSID
-	print strFileName, strFilePath, strNetworkPath, boolOverwrite, boolCreatPrent
+#def synologyUploadFile (strFileName, strFilePath, strNetworkPath, boolOverwrite, boolCreatePrent):
+#	strApiUrl = strFileServer + '/webapi/entry.cgi?api=SYNO.FileStation.Upload&version=2&method=upload&_sid=' + strSID
+#	print strFileName, strFilePath, strNetworkPath, boolOverwrite, boolCreatPrent
 	
 	### Currently not working
-	
+def synologyUploadFile(strDestPath, strFilePath, sid, create_parents=True, overwrite=True):
+	api_name = 'SYNO.FileStation.Upload'
+	filename = os.path.basename(strFilePath)
+	session = requests.session()
+	with open(strFilePath, 'rb') as payload:
+		url = strFileServer + '/webapi/entry.cgi' + '?api=' + api_name + '&version=2&method=upload&_sid=' + sid
+		args = {
+		'path': strDestPath,
+		'create_parents': create_parents,
+		'overwrite': overwrite,
+		}
+		files = {'file': (filename, payload, 'application/octet-stream')}
+		print url
+		print args
+		r = session.post(url, data=args, files=files)
+		print "Uploading file: " + strFilePath + ' to ' + strDestPath
+		if r.status_code is 200 and r.json()['success']:
+			return 'Upload Complete'
+		else:
+			print r.status_code, r.json()
+			return r.status_code, r.json()
+
 # 	POST /webapi/entry.cgi
 # Content-Length:20326728
 # Content-type: multipart/form-data, boundary=AaB03x
@@ -385,7 +406,7 @@ strSID = synologyLoginUrllib3 ()
 #synologyDeleteFolderRequests (strSID, strShare + '/Test')
 #synologyDeleteFolderUrllib3 (strSID, strShare + '/Test')
 
-#synologyUploadFile ('test_file.txt', '~/Desktop/', strShare + '/' + schoolYear + '/' + strDate, True, True)
+#synologyUploadFile (strShare + '/' + schoolYear + '/' + strDate, '~/Desktop/test_file.txt', strSID, True, True)
 
 #synologyLogoutUrllib2 (strSID)
 #synologyLogoutRequests(strSID)
